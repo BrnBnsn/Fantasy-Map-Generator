@@ -1658,7 +1658,7 @@ const getPin = (shape = "bubble", fill = "#fff", stroke = "#000") => {
 };
 
 function drawMarker(marker, rescale = 1) {
-  const {i, icon, radius = 0, x, y, dx = 50, dy = 50, px = 12, size = 30, pin, fill, stroke} = marker;
+  const {i, icon, x, y, dx = 50, dy = 50, px = 12, size = 30, pin, fill, stroke} = marker;
   const id = `marker${i}`;
   const zoomSize = rescale ? Math.max(rn(size / 5 + 24 / scale, 2), 1) : size;
   const viewX = rn(x - zoomSize / 2, 1);
@@ -1669,13 +1669,13 @@ function drawMarker(marker, rescale = 1) {
 }
 
 function drawMarkersRadius(marker) {
-  const {i, radius = 0, x, y, fill, stroke } = marker;
+  const {i, radius = 0, x, y, fill = "#fff", stroke = "#000" } = marker;
   const id = `marker${i}-radius`;
   const radiusSize = getPixelsFromUnits(radius * 2);
   const radiusX = rn(x - radiusSize / 2, 1);
   const radiusY = rn(y - radiusSize / 2, 1);
 
-  return `<svg id="${id}" data-is-radius="1" viewBox="0 0 30 30" width="${radiusSize}" height="${radiusSize}" x="${radiusX}" y="${radiusY}"><g><circle cx="50%" cy="50%" r="15" stroke="${stroke}" stroke-width="0" fill="${fill}" fill-opacity="0.2"></circle></g></svg>`;
+  return `<svg id="${id}" data-is-radius="1" viewBox="0 0 30 30" width="${radiusSize}" height="${radiusSize}" x="${radiusX}" y="${radiusY}"><g><circle cx="50%" cy="50%" r="15" stroke="${stroke}" stroke-width="0" fill="${fill}" fill-opacity="0.3"></circle></g></svg>`;
 }
 
 function toggleLabels(event) {
