@@ -318,6 +318,7 @@ async function parseLoadedData(data) {
       anchors = icons.select("#anchors");
       armies = viewbox.select("#armies");
       markers = viewbox.select("#markers");
+      markersRadius = viewbox.select("#markersRadius");
       ruler = viewbox.select("#ruler");
       fogging = viewbox.select("#fogging");
       debug = viewbox.select("#debug");

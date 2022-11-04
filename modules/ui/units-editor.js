@@ -43,23 +43,44 @@ function editUnits() {
   document.getElementById("removeRulers").addEventListener("click", removeAllRulers);
   document.getElementById("unitsRestore").addEventListener("click", restoreDefaultUnits);
 
+  function updateMarkerRadiusSize(scale) {
+    const pinned = +markers.attr("pinned");
+    const markersData = pinned ? pack.markers.filter(({pinned}) => pinned) : pack.markers;
+
+    markersData.forEach(marker => {
+      marker.radius = marker.radius ?? 0;
+      const {i, x, y, radius, hidden} = marker;
+      const el = !hidden && document.getElementById(`marker${i}-radius`);
+      if (!el) return;
+
+      const size = getPixelsFromUnits(radius * 2);
+      el.setAttribute("width", size);
+      el.setAttribute("height", size);
+      el.setAttribute("x", rn(x - size / 2, 1));
+      el.setAttribute("y", rn(y - size / 2, 1));
+    });
+  }
+
   function changeDistanceUnit() {
     if (this.value === "custom_name") {
       prompt("Provide a custom name for a distance unit", {default: ""}, custom => {
         this.options.add(new Option(custom, custom, false, true));
         lock("distanceUnit");
         drawScaleBar(scale);
+        updateMarkerRadiusSize();
         calculateFriendlyGridSize();
       });
       return;
     }
 
     drawScaleBar(scale);
+    updateMarkerRadiusSize();
     calculateFriendlyGridSize();
   }
 
   function changeDistanceScale() {
     drawScaleBar(scale);
+    updateMarkerRadiusSize();
     calculateFriendlyGridSize();
   }
 
@@ -140,6 +161,7 @@ function editUnits() {
     localStorage.removeItem("barPosX");
     localStorage.removeItem("barPosY");
     drawScaleBar(scale);
+    updateMarkerRadiusSize(scale);
 
     // population
     populationRate = populationRateOutput.value = populationRateInput.value = 1000;

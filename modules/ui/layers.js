@@ -1618,6 +1618,7 @@ function toggleMarkers(event) {
   } else {
     if (event && isCtrlClick(event)) return editStyle("markers");
     markers.selectAll("*").remove();
+    markersRadius.selectAll("*").remove();
     turnButtonOff("toggleMarkers");
   }
 }
@@ -1629,6 +1630,8 @@ function drawMarkers() {
   const markersData = pinned ? pack.markers.filter(({pinned}) => pinned) : pack.markers;
   const html = markersData.map(marker => drawMarker(marker, rescale));
   markers.html(html.join(""));
+  const radiusHtml = markersData.map(marker => drawMarkersRadius(marker));
+  markersRadius.html(radiusHtml.join(""));
 }
 
 const getPin = (shape = "bubble", fill = "#fff", stroke = "#000") => {
@@ -1646,7 +1649,7 @@ const getPin = (shape = "bubble", fill = "#fff", stroke = "#000") => {
   if (shape === "shieldy")
     return `<path d="M 15,29 6,21 5,7 c 0,0 5,-3 10,-3 5,0 10,3 10,3 l -1,14 z" fill="${fill}" stroke="${stroke}" />`;
   if (shape === "shield")
-    return `<path d="M 4.6,5.2 H 25 v 6.7 A 20.3,20.4 0 0 1 15,29 20.3,20.4 0 0 1 4.6,11.9 Z" fill="${fill}" stroke="${stroke}" />`;
+    return `<path d="M 4.6,5.2 H 25 v 6.7 A 20.3,200.4 0 0 1 15,29 20.3,20.4 0 0 1 4.6,11.9 Z" fill="${fill}" stroke="${stroke}" />`;
   if (shape === "pentagon") return `<path d="M 4,16 9,4 h 12 l 5,12 -11,13 z" fill="${fill}" stroke="${stroke}" />`;
   if (shape === "heptagon")
     return `<path d="M 15,29 6,22 4,12 10,4 h 10 l 6,8 -2,10 z" fill="${fill}" stroke="${stroke}" />`;
@@ -1655,7 +1658,7 @@ const getPin = (shape = "bubble", fill = "#fff", stroke = "#000") => {
 };
 
 function drawMarker(marker, rescale = 1) {
-  const {i, icon, x, y, dx = 50, dy = 50, px = 12, size = 30, pin, fill, stroke} = marker;
+  const {i, icon, radius = 0, x, y, dx = 50, dy = 50, px = 12, size = 30, pin, fill, stroke} = marker;
   const id = `marker${i}`;
   const zoomSize = rescale ? Math.max(rn(size / 5 + 24 / scale, 2), 1) : size;
   const viewX = rn(x - zoomSize / 2, 1);
@@ -1663,6 +1666,16 @@ function drawMarker(marker, rescale = 1) {
   const pinHTML = getPin(pin, fill, stroke);
 
   return `<svg id="${id}" viewbox="0 0 30 30" width="${zoomSize}" height="${zoomSize}" x="${viewX}" y="${viewY}"><g>${pinHTML}</g><text x="${dx}%" y="${dy}%" font-size="${px}px" >${icon}</text></svg>`;
+}
+
+function drawMarkersRadius(marker) {
+  const {i, radius = 0, x, y, fill, stroke } = marker;
+  const id = `marker${i}-radius`;
+  const radiusSize = getPixelsFromUnits(radius * 2);
+  const radiusX = rn(x - radiusSize / 2, 1);
+  const radiusY = rn(y - radiusSize / 2, 1);
+
+  return `<svg id="${id}" data-is-radius="1" viewBox="0 0 30 30" width="${radiusSize}" height="${radiusSize}" x="${radiusX}" y="${radiusY}"><g><circle cx="50%" cy="50%" r="15" stroke="${stroke}" stroke-width="0" fill="${fill}" fill-opacity="0.2"></circle></g></svg>`;
 }
 
 function toggleLabels(event) {

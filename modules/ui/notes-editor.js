@@ -108,11 +108,6 @@ function editNotes(id, name) {
     updateNotesBox(note);
   }
 
-  function updateNotesBox(note) {
-    document.getElementById("notesHeader").innerHTML = note.name;
-    document.getElementById("notesBody").innerHTML = note.legend;
-  }
-
   function changeElement() {
     const note = notes.find(note => note.id === this.value);
     if (!note) return tip("Note element is not found", true, "error", 4000);

@@ -20,3 +20,8 @@ function lim(v) {
 function normalize(val, min, max) {
   return minmax((val - min) / (max - min), 0, 1);
 }
+
+// distance between two points
+function distance(x1, y1, x2, y2) {
+  return Math.hypot(x2 - x1, y2 - y1);
+}

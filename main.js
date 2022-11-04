@@ -81,6 +81,7 @@ let icons = viewbox.append("g").attr("id", "icons");
 let burgIcons = icons.append("g").attr("id", "burgIcons");
 let anchors = icons.append("g").attr("id", "anchors");
 let armies = viewbox.append("g").attr("id", "armies").style("display", "none");
+let markersRadius = viewbox.append("g").attr("id", "markersRadius");
 let markers = viewbox.append("g").attr("id", "markers");
 let fogging = viewbox
   .append("g")

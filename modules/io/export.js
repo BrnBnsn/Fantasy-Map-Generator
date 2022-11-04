@@ -142,7 +142,9 @@ async function saveTiles() {
 async function getMapURL(type, options = {}) {
   const {debug = false, globe = false, noLabels = false, noWater = false, noScaleBar = false, noIce = false, fullMap = false} = options;
 
-  if (fullMap) drawScaleBar(1);
+  if (fullMap) {
+    drawScaleBar(1);
+  }
 
   const cloneEl = document.getElementById("map").cloneNode(true); // clone svg
   cloneEl.id = "fantasyMap";

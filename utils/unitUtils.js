@@ -36,3 +36,13 @@ function getInteger(value) {
   if (metric === "B") return parseInt(value.slice(0, -1) * 1e9);
   return parseInt(value);
 }
+
+function getPixelsFromUnits(units) {
+  const distanceScale = +document.getElementById("distanceScaleInput").value;
+  return (units / distanceScale);
+}
+
+function getUnitsFromPixels(pixels) {
+    const distanceScale = +document.getElementById("distanceScaleInput").value;
+    return (pixels * distanceScale);
+}

@@ -170,16 +170,16 @@ function overviewMarkers() {
   }
 
   function exportMarkers() {
-    const headers = "Id,Type,Icon,Name,Note,X,Y\n";
+    const headers = "Id,Type,Radius,Icon,Name,Note,X,Y\n";
     const quote = s => '"' + s.replaceAll('"', '""') + '"';
 
     const body = pack.markers.map(marker => {
-      const {i, type, icon, x, y} = marker;
+      const {i, type, radius, icon, x, y} = marker;
       const id = `marker${i}`;
       const note = notes.find(note => note.id === id);
       const name = note ? quote(note.name) : 'Unknown';
       const legend = note ? quote(note.legend) : '';
-      return [id, type, icon, name, legend, x, y].join(",");
+      return [id, type, radius, icon, name, legend, x, y].join(",");
     });
 
     const data = headers + body.join("\n");

@@ -97,10 +97,12 @@ function showNotes(e) {
   const note = notes.find(note => note.id === id);
   if (note !== undefined && note.legend !== "") {
     document.getElementById("notes").style.display = "block";
+    document.getElementById("notesId").innerHTML = note.id;
     document.getElementById("notesHeader").innerHTML = note.name;
     document.getElementById("notesBody").innerHTML = note.legend;
   } else if (!options.pinNotes && !markerEditor?.offsetParent) {
     document.getElementById("notes").style.display = "none";
+    document.getElementById("notesId").innerHTML = "";
     document.getElementById("notesHeader").innerHTML = "";
     document.getElementById("notesBody").innerHTML = "";
   }

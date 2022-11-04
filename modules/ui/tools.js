@@ -760,6 +760,9 @@ function addMarkerOnClick() {
   const markersElement = document.getElementById("markers");
   const rescale = +markersElement.getAttribute("rescale");
   markersElement.insertAdjacentHTML("beforeend", drawMarker(marker, rescale));
+  const markersRadiusElement = document.getElementById("markersRadius");
+  markersRadiusElement.insertAdjacentHTML("beforeend", drawMarkersRadius(marker));
+  markers.forEach(m => updateNearbyMarkers(m));
 
   if (d3.event.shiftKey === false) {
     document.getElementById("markerAdd").classList.remove("pressed");

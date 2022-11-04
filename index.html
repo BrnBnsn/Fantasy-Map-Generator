@@ -3298,6 +3298,12 @@
             <input id="markerType" style="width: 10.3em" />
           </div>
 
+          <div
+            data-tip="Marker radius in map units">
+            <div class="label">Radius:</div>
+            <input id="markerRadius" style="width: 10.3em" />
+          </div>
+
           <div data-tip="Marker icon. Paste any Unicode symbol or select from the predefined list">
             <div class="label">Icon:</div>
             <input id="markerIcon" style="width: 5em" />
@@ -6004,6 +6010,7 @@
     </div>
 
     <div id="notes">
+      <div id="notesId" style="display: none;"></div>
       <div id="notesHeader"></div>
       <div id="notesBody"></div>
     </div>
@@ -7825,7 +7832,9 @@
     <script src="utils/arrayUtils.js"></script>
     <script src="utils/colorUtils.js"></script>
     <script src="utils/graphUtils.js"></script>
+    <script src="utils/markerUtils.js"></script>
     <script src="utils/nodeUtils.js"></script>
+    <script src="utils/noteUtils.js"></script>
     <script src="utils/numberUtils.js"></script>
     <script src="utils/polyfills.js"></script>
     <script src="utils/probabilityUtils.js?v=1.88.00"></script>

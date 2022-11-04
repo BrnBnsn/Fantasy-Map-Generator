@@ -12,6 +12,7 @@ function editMarker(markerI) {
 
   // dom elements
   const markerType = document.getElementById("markerType");
+  const markerRadius = document.getElementById("markerRadius");
   const markerIcon = document.getElementById("markerIcon");
   const markerIconSelect = document.getElementById("markerIconSelect");
   const markerIconSize = document.getElementById("markerIconSize");
@@ -39,6 +40,7 @@ function editMarker(markerI) {
 
   const listeners = [
     listen(markerType, "change", changeMarkerType),
+    listen(markerRadius, "change", changeMarkerRadius),
     listen(markerIcon, "input", changeMarkerIcon),
     listen(markerIconSelect, "click", selectMarkerIcon),
     listen(markerIconSize, "input", changeIconSize),
@@ -56,7 +58,7 @@ function editMarker(markerI) {
 
   function getElement(markerI, event) {
     if (event) {
-      const element = event.target?.closest("svg");
+      const element = event.target?.closest("svg:not([data-is-radius=\"1\"])");
       const marker = pack.markers.find(({i}) => Number(element.id.slice(6)) === i);
       return [element, marker];
     }
@@ -76,16 +78,24 @@ function editMarker(markerI) {
     const dx = +this.getAttribute("x") - d3.event.x;
     const dy = +this.getAttribute("y") - d3.event.y;
 
+    const radius = document.getElementById(`${this.getAttribute("id")}-radius`);
+    const rdx = +radius.getAttribute("x") - d3.event.x;
+    const rdy = +radius.getAttribute("y") - d3.event.y;
+
     d3.event.on("drag", function () {
       const {x, y} = d3.event;
       this.setAttribute("x", dx + x);
       this.setAttribute("y", dy + y);
+      radius.setAttribute("x", rdx + x);
+      radius.setAttribute("y", rdy + y);
     });
 
     d3.event.on("end", function () {
       const {x, y} = d3.event;
       this.setAttribute("x", rn(dx + x, 2));
       this.setAttribute("y", rn(dy + y, 2));
+      radius.setAttribute("x", rn(rdx + x, 2));
+      radius.setAttribute("y", rn(rdy + y, 2));
 
       const size = marker.size || 30;
       const zoomSize = Math.max(rn(size / 5 + 24 / scale, 2), 1);
@@ -93,13 +103,17 @@ function editMarker(markerI) {
       marker.x = rn(x + dx + zoomSize / 2, 1);
       marker.y = rn(y + dy + zoomSize, 1);
       marker.cell = findCell(marker.x, marker.y);
+
+      pack.markers.forEach(m => updateNearbyMarkers(m));
+      updateLegendById(`marker${marker.i}`);
     });
   }
 
   function updateInputs() {
-    const {icon, type = "", size = 30, dx = 50, dy = 50, px = 12, stroke = "#000000", fill = "#ffffff", pin = "bubble", lock} = marker;
+    const {icon, type = "", radius = 0, size = 30, dx = 50, dy = 50, px = 12, stroke = "#000000", fill = "#ffffff", pin = "bubble", lock} = marker;
 
     markerType.value = type;
+    markerRadius.value = radius;
     markerIcon.value = icon;
     markerIconSize.value = px;
     markerIconShiftX.value = dx;
@@ -114,6 +128,26 @@ function editMarker(markerI) {
 
   function changeMarkerType() {
     marker.type = this.value;
+  }
+
+  function changeMarkerRadius() {
+    const radius = this.value;
+
+    getSameTypeMarkers().forEach(marker => {
+      marker.radius = radius;
+      const {i, x, y, hidden} = marker;
+      const el = !hidden && document.getElementById(`marker${i}-radius`);
+      if (!el) return;
+
+      const size = getPixelsFromUnits(radius * 2);
+      el.setAttribute("width", size);
+      el.setAttribute("height", size);
+      el.setAttribute("x", rn(x - size / 2, 1));
+      el.setAttribute("y", rn(y - size / 2, 1));
+    });
+
+    pack.markers.forEach(m => updateNearbyMarkers(m));
+    updateLegendById(`marker${marker.i}`);
   }
 
   function changeMarkerIcon() {
@@ -189,6 +223,7 @@ function editMarker(markerI) {
     getSameTypeMarkers().forEach(marker => {
       marker.fill = fill;
       redrawPin(marker);
+      redrawRadius(marker);
     });
   }
 
@@ -197,6 +232,7 @@ function editMarker(markerI) {
     getSameTypeMarkers().forEach(marker => {
       marker.stroke = stroke;
       redrawPin(marker);
+      redrawRadius(marker);
     });
   }
 
@@ -213,6 +249,15 @@ function editMarker(markerI) {
   function redrawPin({i, hidden, pin = "bubble", fill = "#fff", stroke = "#000"}) {
     const pinGroup = !hidden && document.querySelector(`#marker${i} > g`);
     if (pinGroup) pinGroup.innerHTML = getPin(pin, fill, stroke);
+  }
+
+  function redrawRadius({i, hidden, fill = "#fff", stroke = "#000"}) {
+    const radiusElement = !hidden && document.querySelector(`#marker${i}-radius > g > circle`);
+
+    if (radiusElement) {
+        radiusElement.setAttribute("fill", fill);
+        radiusElement.setAttribute("stroke", stroke);
+    }
   }
 
   function editMarkerLegend() {

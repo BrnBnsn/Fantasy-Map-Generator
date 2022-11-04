@@ -74,6 +74,8 @@ window.Markers = (function () {
       }
       const id = `marker${i}`;
       document.getElementById(id)?.remove();
+      const radiusId = `marker${i}-radius`;
+      document.getElementById(radiusId)?.remove();
       const index = notes.findIndex(note => note.id === id);
       if (index != -1) notes.splice(index, 1);
       return false;
@@ -85,8 +87,8 @@ window.Markers = (function () {
   const add = marker => {
     const base = config.find(c => c.type === marker.type);
     if (base) {
-      const {icon, type, dx, dy, px} = base;
-      marker = addMarker({icon, type, dx, dy, px}, marker);
+      const {icon, radius, type, dx, dy, px} = base;
+      marker = addMarker({icon, type, radius, dx, dy, px}, marker);
       base.add("marker" + marker.i, marker.cell);
       return marker;
     }
@@ -100,7 +102,7 @@ window.Markers = (function () {
   function generateTypes() {
     TIME && console.time("addMarkers");
 
-    config.forEach(({type, icon, dx, dy, px, min, each, multiplier, list, add}) => {
+    config.forEach(({type, radius, icon, dx, dy, px, min, each, multiplier, list, add}) => {
       if (multiplier === 0) return;
 
       let candidates = Array.from(list(pack));
@@ -110,7 +112,7 @@ window.Markers = (function () {
 
       while (quantity && candidates.length) {
         const [cell] = extractAnyElement(candidates);
-        const marker = addMarker({icon, type, dx, dy, px}, {cell});
+        const marker = addMarker({icon, type, radius, dx, dy, px}, {cell});
         add("marker" + marker.i, cell);
         quantity--;
       }
